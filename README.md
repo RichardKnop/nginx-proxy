@@ -273,6 +273,11 @@ If you are using multiple hostnames for a single container (e.g. `VIRTUAL_HOST=e
 If you want most of your virtual hosts to use a default single `location` block configuration and then override on a few specific ones, add those settings to the `/etc/nginx/vhost.d/default_location` file. This file
 will be used on any virtual host which does not have a `/etc/nginx/vhost.d/{VIRTUAL_HOST}` file associated with it.
 
+#### docker-compose for nginx-proxy and letsencrypt 
+
+- use "docker-compose-letsencrypt-ssl.yml" to run nginx-proxy and letsencrypt containers
+- refer "docker-compose-nginx-letencrypt-app-example.yml" to configure necessary variables
+
 ### Contributing
 
 Before submitting pull requests or issues, please check github to make sure an existing issue or pull request is not already open.

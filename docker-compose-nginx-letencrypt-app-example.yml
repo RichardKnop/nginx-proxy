@@ -1,0 +1,41 @@
+version: "2"
+
+services:
+  web:
+    image: 'app-image'
+    restart: always
+    environment:
+      - TERM=xterm
+      - LETSENCRYPT_EMAIL=admin@example.com
+      - LETSENCRYPT_HOST=example.com
+      - VIRTUAL_HOST=example.com
+      - VIRTUAL_PROTO=https
+      - VIRTUAL_PORT=8080
+    hostname: 'example.com'
+    expose:
+      - "8080"
+    build: . 
+    volumes:
+      - /data/nginx-proxy/certs/:/etc/ssl/example.com
+      - /data/qbank-lite/webapps:/qbank/webapps
+      - .:/qbank
+    command: >
+      /bin/bash -c 'python myapp.py'
+    ports:
+      - "8010:8080"
+    links:
+      - mongo:mongodb
+    depends_on:
+      - mongo
+  mongo:
+    image: 'mongo:latest'
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - /data/myapp/db:/data/db
+
+networks:
+  default:
+    external:
+      name: example-bridge-network

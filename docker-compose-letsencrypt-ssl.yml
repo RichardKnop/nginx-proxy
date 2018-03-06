@@ -1,0 +1,41 @@
+version: '2'
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /home/core/data/nginx-proxy/certs:/etc/nginx/certs:ro
+      - /home/core/data/nginx-proxy/vhost.d:/etc/nginx/vhost.d:rw
+#      - /etc/nginx/vhost.d
+#      - /usr/share/nginx/html
+      - /home/core/data/nginx-proxy/html:/usr/share/nginx/html:rw
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+
+# in case of any issues comment "/home/core/data/nginx-proxy/vhost.d:/etc/nginx/vhost.d" and "/home/core/data/nginx-proxy/html:/usr/share/nginx/html" from above volumes block
+
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt-nginx-proxy-companion
+    volumes:
+      - /home/core/data/nginx-proxy/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy
+
+
+#  whoami:
+#    image: jwilder/whoami
+#    environment:
+#      - VIRTUAL_HOST=whoami.local
+
+networks:
+  default:
+    external:
+      name: nginx-proxy-bridge-network
+
